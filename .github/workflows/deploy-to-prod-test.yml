@@ -49,7 +49,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       FREEZE_TIME: '10pm UTC Tuesday'
-      DEPLOYMENT_TIME: '9:05pm UTC Monday'
+      DEPLOYMENT_TIME: '9:08pm UTC Monday'
     steps:
       - name: calculate date
         id: date
@@ -74,10 +74,10 @@ jobs:
         run: |
           inputs_json=$(cat << EOF
           {
-            "cluster_name": "${{ inputs.cluster }}",
+            "cluster": "${{ inputs.cluster }}",
             "chart_name": "${{ inputs.chart_name }}",
-            "version": "${{ inputs.chart_version }}",
-            "custom_values_file": "${{ inputs.values_filename }}",
+            "chart_version": "${{ inputs.chart_version }}",
+            "values_filename": "${{ inputs.values_filename }}",
             "description": "${{ inputs.description }}",
             "slack_channel": "dscc-gha-prod-deploys",
             "int_checks_status": "true"

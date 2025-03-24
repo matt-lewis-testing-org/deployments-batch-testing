@@ -68,6 +68,20 @@ jobs:
           echo "Calculated deployment date: $date"
           echo "date=$date" >> "$GITHUB_OUTPUT"
 
+      - name: create JSON string
+        id: json-string
+        run: |
+          inputs-json='{
+              "cluster_name": "${{ inputs.cluster }}",
+              "chart_name": "${{ inputs.chart_name }}",
+              "version": "${{ inputs.chart_version }}",
+              "custom_values_file": "${{ inputs.values_filename }}",
+              "description": "${{ inputs.description }}",
+              "slack_channel": "dscc-gha-prod-deploys",
+              "int_checks_status": "true"
+            }'
+          echo "inputs-json=$inputs-json" >> "$GITHUB_OUTPUT"
+
       - name: Get deployment action scheduler token from github app
         id: github-app
         uses: actions/create-github-app-token@v1
@@ -82,13 +96,4 @@ jobs:
           date: ${{ steps.date.outputs.date }}
           workflow: output-inputs.yml
           timezone: UTC
-          inputs: |
-            '{
-              "cluster_name": "${{ inputs.cluster }}",
-              "chart_name": "${{ inputs.chart_name }}",
-              "version": "${{ inputs.chart_version }}",
-              "custom_values_file": "${{ inputs.values_filename }}",
-              "description": "${{ inputs.description }}",
-              "slack_channel": "dscc-gha-prod-deploys",
-              "int_checks_status": "true"
-            }'
+          inputs: ${{ toJson(steps.json-string.outputs.inputs-json) }}

@@ -80,7 +80,7 @@ jobs:
         with:
           github-token: ${{ steps.github-app.outputs.token }}
           date: ${{ steps.date.outputs.date }}
-          workflow: deploy-to-ccp.yml
+          workflow: output-inputs.yml
           timezone: UTC
           inputs: |
             '{

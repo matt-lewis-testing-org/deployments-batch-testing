@@ -1,0 +1,46 @@
+name: output inputs
+
+on:
+  workflow_dispatch:
+    inputs:
+      cluster:
+        type: choice
+        description: 'Cluster to deploy to'
+        required: true
+        options:
+          - scprodeu-eu-central-1
+          - scprodjp-ap-northeast-1
+      chart_name:
+        type: choice
+        description: 'the name of the helm chart to deploy'
+        required: true
+        options:
+# service options
+          - agent-auth
+          - agent-auth-functional-test
+      chart_version:
+        description: |
+          The helm chart version number to deploy in git describe X.Y.Z-0-gabcdefa format.
+          Value can be found in the annotation of your Github Actions Workflow run.
+        required: true
+      values_filename:
+        description: 'Custom values chart'
+        default: 'values.yaml'
+      description:
+        type: string
+        description: |
+          A short description of the change being deployed. This will be shared with our
+          partners.
+        required: true
+
+jobs:
+  output-inputs:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "Inputs:"
+          echo "Cluster: ${{ inputs.cluster }}"
+          echo "Chart Name: ${{ inputs.chart_name }}"
+          echo "Chart Version: ${{ inputs.chart_version }}"
+          echo "Values Filename: ${{ inputs.values_filename }}"
+          echo "Description: ${{ inputs.description }}"

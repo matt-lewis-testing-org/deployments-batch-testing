@@ -90,5 +90,5 @@ jobs:
               "custom_values_file": "${{ inputs.values_filename }}",
               "description": "${{ inputs.description }}",
               "slack_channel": "dscc-gha-prod-deploys",
-              "int-checks-status": "true"
+              "int_checks_status": "true"
             }'

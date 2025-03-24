@@ -26,12 +26,18 @@ on:
       values_filename:
         description: 'Custom values chart'
         default: 'values.yaml'
+      slack_channel:
+        description: 'Slack channel'
+        default: 'dscc-gha-prod-deploys'
       description:
         type: string
         description: |
           A short description of the change being deployed. This will be shared with our
           partners.
         required: true
+      int_checks_status:
+        type: string
+        default: 'false'
 
 jobs:
   output-inputs:
@@ -39,8 +45,10 @@ jobs:
     steps:
       - run: |
           echo "Inputs:"
-          echo "Cluster: ${{ inputs.cluster }}"
+          echo "Cluster Name: ${{ inputs.cluster }}"
           echo "Chart Name: ${{ inputs.chart_name }}"
           echo "Chart Version: ${{ inputs.chart_version }}"
+          echo "Slack Channel: ${{ inputs.slack_channel }}"
           echo "Values Filename: ${{ inputs.values_filename }}"
           echo "Description: ${{ inputs.description }}"
+          echo "INT Checks Status: ${{ inputs.int_checks_status }}"

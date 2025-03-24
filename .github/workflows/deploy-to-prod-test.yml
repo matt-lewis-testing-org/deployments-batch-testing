@@ -71,7 +71,7 @@ jobs:
       - name: create JSON string
         id: json-string
         run: |
-          inputs-json=$(cat << EOF
+          inputs_json=$(cat << EOF
           {
             "cluster_name": "${{ inputs.cluster }}",
             "chart_name": "${{ inputs.chart_name }}",
@@ -84,7 +84,7 @@ jobs:
           EOF
           )
 
-          echo "inputs-json=$inputs-json" >> "$GITHUB_OUTPUT"
+          echo "inputs_json=$inputs_json" >> "$GITHUB_OUTPUT"
 
       - name: Get deployment action scheduler token from github app
         id: github-app
@@ -100,4 +100,4 @@ jobs:
           date: ${{ steps.date.outputs.date }}
           workflow: output-inputs.yml
           timezone: UTC
-          inputs: ${{ toJson(steps.json-string.outputs.inputs-json) }}
+          inputs: ${{ toJson(steps.json-string.outputs.inputs_json) }}

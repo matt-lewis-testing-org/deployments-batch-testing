@@ -44,7 +44,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: |
-          echo "Inputs:"
+          echo "Inputs"
           echo "Cluster Name: ${{ inputs.cluster }}"
           echo "Chart Name: ${{ inputs.chart_name }}"
           echo "Chart Version: ${{ inputs.chart_version }}"
@@ -52,3 +52,9 @@ jobs:
           echo "Values Filename: ${{ inputs.values_filename }}"
           echo "Description: ${{ inputs.description }}"
           echo "INT Checks Status: ${{ inputs.int_checks_status }}"
+
+  test-secret:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "${{ secrets.RO_APP_KEY }}"

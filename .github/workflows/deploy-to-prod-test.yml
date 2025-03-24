@@ -4,7 +4,7 @@ on:
   schedule:
     # This MUST be in sync with the DEPLOYMENT_TIME below (and is in UTC)
     # Set to 5 mins past the hour to avoid the hourly crush
-    - cron: '5 15 * * 3'
+    - cron: '0 20 * * 1'
   workflow_dispatch:
     inputs:
       cluster:

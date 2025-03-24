@@ -60,11 +60,12 @@ jobs:
         run: |
           freeze_secs="$(date +%s --date "$FREEZE_TIME")"
           deploy_secs="$(date +%s --date "$DEPLOYMENT_TIME")"
-          if [[ "$freeze_secs" -gt "$deploy_secs" ]]; then
-            date="$(date --date "$DEPLOYMENT_TIME + 1 week")"
-          else
-            date="$(date --date "$DEPLOYMENT_TIME")"
-          fi
+          # if [[ "$freeze_secs" -gt "$deploy_secs" ]]; then
+          #   date="$(date --date "$DEPLOYMENT_TIME + 1 week")"
+          # else
+          #   date="$(date --date "$DEPLOYMENT_TIME")"
+          # fi
+          date="$(date --date "$DEPLOYMENT_TIME")"
           echo "Calculated deployment date: $date"
           echo "date=$date" >> "$GITHUB_OUTPUT"
 

@@ -4,7 +4,7 @@ on:
   schedule:
     # This MUST be in sync with the DEPLOYMENT_TIME below (and is in UTC)
     # Set to 5 mins past the hour to avoid the hourly crush
-    - cron: '10 20 * * 1'
+    - cron: '20 20 * * 1'
   workflow_dispatch:
     inputs:
       cluster:
@@ -48,7 +48,7 @@ jobs:
     needs: check-po-deploy
     runs-on: ubuntu-latest
     env:
-      FREEZE_TIME: '10pm UTC Monday'
+      FREEZE_TIME: '10pm UTC Tuesday'
       DEPLOYMENT_TIME: '8:20pm UTC Monday'
     steps:
       - name: calculate date

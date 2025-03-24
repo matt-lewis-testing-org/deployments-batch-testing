@@ -84,7 +84,11 @@ jobs:
           EOF
           )
 
-          echo "inputs_json=$inputs_json" >> "$GITHUB_OUTPUT"
+          echo "inputs_json<<EOF" >> "$GITHUB_OUTPUT"
+          echo "$inputs_json" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> $GITHUB_OUTPUT
+
+          # echo "inputs_json=$inputs_json" >> "$GITHUB_OUTPUT"
 
       - name: Get deployment action scheduler token from github app
         id: github-app

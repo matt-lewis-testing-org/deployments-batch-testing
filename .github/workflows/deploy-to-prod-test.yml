@@ -71,15 +71,19 @@ jobs:
       - name: create JSON string
         id: json-string
         run: |
-          inputs-json='{
-              "cluster_name": "${{ inputs.cluster }}",
-              "chart_name": "${{ inputs.chart_name }}",
-              "version": "${{ inputs.chart_version }}",
-              "custom_values_file": "${{ inputs.values_filename }}",
-              "description": "${{ inputs.description }}",
-              "slack_channel": "dscc-gha-prod-deploys",
-              "int_checks_status": "true"
-            }'
+          inputs-json=$(cat << EOF
+          {
+            "cluster_name": "${{ inputs.cluster }}",
+            "chart_name": "${{ inputs.chart_name }}",
+            "version": "${{ inputs.chart_version }}",
+            "custom_values_file": "${{ inputs.values_filename }}",
+            "description": "${{ inputs.description }}",
+            "slack_channel": "dscc-gha-prod-deploys",
+            "int_checks_status": "true"
+          }
+          EOF
+          )
+
           echo "inputs-json=$inputs-json" >> "$GITHUB_OUTPUT"
 
       - name: Get deployment action scheduler token from github app

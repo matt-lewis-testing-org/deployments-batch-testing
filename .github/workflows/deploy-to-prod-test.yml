@@ -60,14 +60,12 @@ jobs:
         run: |
           freeze_secs="$(date +%s --date "$FREEZE_TIME")"
           deploy_secs="$(date +%s --date "$DEPLOYMENT_TIME")"
-          num_schedules="${{ toJson(vars) }}"
-          echo -e "$num_schedules"
-          # if [[ "$freeze_secs" -gt "$deploy_secs" ]]; then
-          #   date="$(date --date "$DEPLOYMENT_TIME + 1 week")"
-          # else
-          #   date="$(date --date "$DEPLOYMENT_TIME")"
-          # fi
-          date="$(date --date "$DEPLOYMENT_TIME")"
+          num_schedules=$(echo -e '${{ toJson(vars) }}' | jq 'keys | map(select(startswith("_SCHEDULE_"))) | length')
+          if [[ "$freeze_secs" -gt "$deploy_secs" ]]; then
+            date="$(date --date "$DEPLOYMENT_TIME + $num_schedules seconds + 1 week")"
+          else
+            date="$(date --date "$DEPLOYMENT_TIME + $num_schedules seconds")"
+          fi
           echo "Calculated deployment date: $date"
           echo "date=$date" >> "$GITHUB_OUTPUT"
 

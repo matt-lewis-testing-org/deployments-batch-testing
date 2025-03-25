@@ -108,7 +108,7 @@ jobs:
           workflow: output-inputs.yml
           timezone: UTC
           inputs: |
-            '{
+            {
               "cluster": "${{ inputs.cluster }}",
               "chart_name": "${{ inputs.chart_name }}",
               "chart_version": "${{ inputs.chart_version }}",
@@ -116,4 +116,4 @@ jobs:
               "description": "${{ inputs.description }}",
               "slack_channel": "dscc-gha-prod-deploys",
               "int_checks_status": "true"
-            }'
+            }

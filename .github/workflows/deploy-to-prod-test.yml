@@ -60,6 +60,8 @@ jobs:
         run: |
           freeze_secs="$(date +%s --date "$FREEZE_TIME")"
           deploy_secs="$(date +%s --date "$DEPLOYMENT_TIME")"
+          num_schedules="${{ toJson(vars) }}"
+          echo -e "$num_schedules"
           # if [[ "$freeze_secs" -gt "$deploy_secs" ]]; then
           #   date="$(date --date "$DEPLOYMENT_TIME + 1 week")"
           # else

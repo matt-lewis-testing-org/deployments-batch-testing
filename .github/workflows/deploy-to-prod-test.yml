@@ -69,30 +69,6 @@ jobs:
           echo "Calculated deployment date: $date"
           echo "date=$date" >> "$GITHUB_OUTPUT"
 
-      - name: create JSON string
-        id: json-string
-        run: |
-          inputs_json=$(cat << EOF
-          {
-            "cluster": "${{ inputs.cluster }}",
-            "chart_name": "${{ inputs.chart_name }}",
-            "chart_version": "${{ inputs.chart_version }}",
-            "values_filename": "${{ inputs.values_filename }}",
-            "description": "${{ inputs.description }}",
-            "slack_channel": "dscc-gha-prod-deploys",
-            "int_checks_status": "true"
-          }
-          EOF
-          )
-
-          {
-            echo "inputs_json<<EOF"
-            echo "$inputs_json"
-            echo "EOF"
-          } >> "$GITHUB_OUTPUT"
-
-          # echo "inputs_json=$inputs_json" >> "$GITHUB_OUTPUT"
-
       - name: Get deployment action scheduler token from github app
         id: github-app
         uses: actions/create-github-app-token@v1

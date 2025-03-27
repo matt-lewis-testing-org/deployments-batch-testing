@@ -73,7 +73,7 @@ runs:
           .addHeading('Deployment Summary', 2)
           .addTable(tableRows)
           .write();
-      with:
-        variables_json: ${{ toJson(inputs.variables_json) }}
+      # with:
+      #   variables_json: ${{ toJson(inputs.variables_json) }}
 
 

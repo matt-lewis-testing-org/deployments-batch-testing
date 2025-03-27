@@ -18,13 +18,21 @@ runs:
     uses: actions/github-script@v6
     with:
       script: |
+        // The summary API is available via the core module.
+        const core = require('@actions/core');
         const summary = core.summary;
-
-        // Retrieve the input JSON string and parse it.
-        const inputJson = ${{ inputs.variables_json }};
-        const variables = JSON.parse(inputJson);
-
-        // Prepare the table rows: start with a header row.
+        
+        // Directly access the input from the global "inputs" variable.
+        const inputJson = inputs.variables_json;
+        let variables;
+        try {
+          variables = JSON.parse(inputJson);
+        } catch (e) {
+          console.error('Failed to parse input JSON:', e);
+          process.exit(1);
+        }
+        
+        // Prepare the table rows with a header row.
         let tableRows = [];
         tableRows.push([
           { data: 'Variable Name', header: true },
@@ -32,7 +40,7 @@ runs:
           { data: 'Chart Name', header: true },
           { data: 'Version', header: true }
         ]);
-
+        
         // Iterate over each key starting with '_SCHEDULE_'
         for (const key in variables) {
           if (key.startsWith('_SCHEDULE_')) {
@@ -43,7 +51,7 @@ runs:
               console.log(`No comma found for ${key}, skipping`);
               continue;
             }
-            // Everything after the comma should be a JSON string.
+            // Extract the JSON part.
             const jsonStr = value.substring(commaIndex + 1).trim();
             let data;
             try {
@@ -52,12 +60,12 @@ runs:
               console.log(`Failed to parse JSON for ${key}: ${err}`);
               continue;
             }
-            // Extract the desired properties.
+            // Extract properties.
             const clusterName = data.cluster_name || '';
             const chartName = data.chart_name || '';
             const version = data.version || '';
-
-            // Append a row for this variable.
+        
+            // Append the row.
             tableRows.push([
               { data: key },
               { data: clusterName },
@@ -66,13 +74,12 @@ runs:
             ]);
           }
         }
-
-        // Build the summary with a heading and the table.
+        
+        // Use the summary API to add a heading and table.
         await summary
           .addHeading('Deployment Summary', 2)
           .addTable(tableRows)
           .write();
-      # with:
-      #   variables_json: ${{ toJson(inputs.variables_json) }}
-
-
+      with:
+        # Ensure the input is stringified if needed.
+        variables_json: ${{ toJson(inputs.variables_json) }}

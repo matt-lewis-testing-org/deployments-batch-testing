@@ -9,4 +9,4 @@ inputs:
 
 runs:
   using: "node20"
-  main: "output-action.js"
+  main: "dist/output-action.js"

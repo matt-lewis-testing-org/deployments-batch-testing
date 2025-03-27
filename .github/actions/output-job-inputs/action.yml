@@ -24,6 +24,7 @@ runs:
           
           // Retrieve the input JSON string from the environment variable.
           const inputJson = process.env.VARIABLES_JSON;
+          console.log('INPUT JSON', inputJson);
           let variables;
           try {
             variables = JSON.parse(inputJson);

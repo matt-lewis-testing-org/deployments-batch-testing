@@ -8,5 +8,20 @@ inputs:
     required: false
 
 runs:
-  using: 'node20'
-  main: 'dist/index.js'
+  using: "composite"
+  steps:
+    - uses: actions/github-script@7
+      env:
+        GITHUB_ACTION_PATH: ${{ github.action_path }}
+      with:
+        script: |
+          const { GITHUB_ACTION_PATH } = process.env;
+          const runScript = require(`${GITHUB_ACTION_PATH}/output-action.js`);
+
+          const scriptInputs = {
+            token: "${{ inputs.token }}",
+            repo: "${{ github.repository }}"
+          };
+
+          await runScript({ github, context, core }, scriptInputs);
+

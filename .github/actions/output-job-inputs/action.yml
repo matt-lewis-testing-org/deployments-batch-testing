@@ -20,11 +20,11 @@ runs:
         VARIABLES_JSON: "${{ toJson(inputs.variables_json) }}"
       with:
         script: |
+          const core = require('@actions/core');
           const summary = core.summary;
           
-          // Retrieve the input JSON string from the environment variable.
+          // Retrieve the input JSON string from the environment.
           const inputJson = process.env.VARIABLES_JSON;
-          console.log('INPUT JSON', inputJson);
           let variables;
           try {
             variables = JSON.parse(inputJson);
@@ -42,30 +42,36 @@ runs:
             { data: 'Version', header: true }
           ]);
           
-          // Iterate over each key starting with '_SCHEDULE_'
+          // Process each key starting with '_SCHEDULE_'
           for (const key in variables) {
             if (key.startsWith('_SCHEDULE_')) {
               const value = variables[key];
-              // Split the value on the first comma.
               const commaIndex = value.indexOf(',');
               if (commaIndex === -1) {
                 console.log(`No comma found for ${key}, skipping`);
                 continue;
               }
-              // Everything after the comma should be a JSON string.
-              const jsonStr = value.substring(commaIndex + 1).trim();
+              // Get everything after the comma.
+              let jsonStr = value.substring(commaIndex + 1).trim();
+              
+              // Attempt to parse the JSON.
               let data;
               try {
                 data = JSON.parse(jsonStr);
+                // If the result is a string, then the JSON was double-encoded.
+                if (typeof data === 'string') {
+                  data = JSON.parse(data);
+                }
               } catch (err) {
                 console.log(`Failed to parse JSON for ${key}: ${err}`);
                 continue;
               }
-              // Extract properties.
-              const clusterName = data.cluster_name || '';
+              
+              // Extract properties in a flexible way.
+              const clusterName = data.cluster_name || data.cluster || '';
               const chartName = data.chart_name || '';
-              const version = data.version || '';
-          
+              const version = data.version || data.chart_version || '';
+              
               // Append a row for this variable.
               tableRows.push([
                 { data: key },
@@ -76,7 +82,7 @@ runs:
             }
           }
           
-          // Build the summary with a heading and the table.
+          // Build and write the summary.
           await summary
             .addHeading('Deployment Summary', 2)
             .addTable(tableRows)

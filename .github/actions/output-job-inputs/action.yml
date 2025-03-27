@@ -10,16 +10,8 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - uses: actions/github-script@v7
-      env:
-        GITHUB_ACTION_PATH: ${{ github.action_path }}
-      with:
-        github_token: ${{ inputs.token }}
-        script: |
-          const { owner, repo } = context.repo;
-
-          const { data: variables } = await github.rest.actions.listRepoVariables({
-            owner,
-            repo
-          });
-          console.log('variables: ', variables)
+    - name: run script
+      shell: bash
+      run: |
+        num_schedules=$(echo '${{ toJson(vars) }}' | jq 'keys | map(select(startswith("_SCHEDULE_")))')
+        echo $num_schedules

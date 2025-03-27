@@ -72,6 +72,12 @@ runs:
               const clusterName = data.cluster_name || data.cluster || '';
               const chartName = data.chart_name || '';
               const version = data.version || data.chart_version || '';
+
+              console.log('key: ', key);
+              console.log('clusterName: ', clusterName);
+              console.log('chartName: ', chartName);
+              console.log('version: ', version);
+              console.log('===================');
               
               // Append a row for this variable.
               tableRows.push([

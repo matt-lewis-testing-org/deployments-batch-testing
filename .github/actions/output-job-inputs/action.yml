@@ -44,10 +44,9 @@ runs:
           ]);
           
           // Process each key starting with '_SCHEDULE_'
-          JSON.parse(inputJson, (key, value) => 
+          JSON.parse(inputJson, (key, value) => {
             console.log('key: ', key);
             if (key.startsWith('_SCHEDULE_')) {
-              const value = variables[key];
               const commaIndex = value.indexOf(',');
               if (commaIndex === -1) {
                 console.log(`No comma found for ${key}, skipping`);

@@ -24,3 +24,4 @@ jobs:
         uses: ./.github/actions/output-job-inputs
         with:
           token: ${{ steps.github-app.outputs.token }}
+          variables_json: ${{ toJson(vars) }}

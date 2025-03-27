@@ -6,6 +6,9 @@ inputs:
     description: The GitHub token used to create an authenticated client
     default: ${{ github.token }}
     required: false
+  variables_json:
+    description: ''
+    required: true
 
 runs:
   using: "composite"
@@ -13,5 +16,5 @@ runs:
     - name: run script
       shell: bash
       run: |
-        num_schedules=$(echo '${{ toJson(vars) }}' | jq 'keys | map(select(startswith("_SCHEDULE_")))')
+        num_schedules=$(echo '${{ inputs.variables_json }}' | jq 'keys | map(select(startswith("_SCHEDULE_")))')
         echo $num_schedules

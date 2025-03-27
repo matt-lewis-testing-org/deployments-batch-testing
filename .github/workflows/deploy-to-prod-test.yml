@@ -48,8 +48,8 @@ jobs:
     needs: check-po-deploy
     runs-on: ubuntu-latest
     env:
-      FREEZE_TIME: '10pm UTC Tuesday'
-      DEPLOYMENT_TIME: '9:38pm UTC Monday'
+      FREEZE_TIME: '3pm UTC Wednesday'
+      DEPLOYMENT_TIME: '5am UTC Monday'
     steps:
       - name: calculate date
         id: date

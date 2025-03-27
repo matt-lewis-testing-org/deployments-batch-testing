@@ -45,6 +45,7 @@ runs:
           
           // Process each key starting with '_SCHEDULE_'
           for (const key in variables) {
+            console.log('key: ', key);
             if (key.startsWith('_SCHEDULE_')) {
               const value = variables[key];
               const commaIndex = value.indexOf(',');

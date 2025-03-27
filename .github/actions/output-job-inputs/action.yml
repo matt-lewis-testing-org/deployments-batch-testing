@@ -38,7 +38,9 @@ runs:
           for (const key of Object.keys(variables)) {
             if (!key.startsWith('_SCHEDULE_')) continue;
 
-            const time = new Date(key.split('_').pop()).toISOString();
+            console.log(key.split('_').pop());
+            
+            const time = new Date(parseInt(key.split('_').pop()));
 
             const value = variables[key];
             const commaIndex = value.indexOf(',');

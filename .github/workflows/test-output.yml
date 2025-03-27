@@ -15,7 +15,7 @@ jobs:
           private-key: ${{ secrets.SCHEDULE_APP_KEY }}
           owner: ${{ github.repository_owner }}
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v3
       
       - name: Call action
         uses: ./.github/actions/output-job-inputs

@@ -16,12 +16,14 @@ runs:
   steps:
     - name: Generate Deployment Summary
       uses: actions/github-script@v6
+      env:
+        VARIABLES_JSON: "${{ toJson(inputs.variables_json) }}"
       with:
         script: |
           const summary = core.summary;
           
-          // Retrieve the input JSON string from the global inputs variable.
-          const inputJson = inputs.variables_json;
+          // Retrieve the input JSON string from the environment variable.
+          const inputJson = process.env.VARIABLES_JSON;
           let variables;
           try {
             variables = JSON.parse(inputJson);
@@ -78,5 +80,3 @@ runs:
             .addHeading('Deployment Summary', 2)
             .addTable(tableRows)
             .write();
-        # Wrap the expression in quotes so it's treated as a string literal.
-        variables_json: "${{ toJson(inputs.variables_json) }}"

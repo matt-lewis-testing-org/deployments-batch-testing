@@ -1,0 +1,23 @@
+name: Workflow to test outputting variable relevant info
+
+on:
+  workflow_dispatch:
+
+jobs:
+  run-action:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get deployment action scheduler token from github app
+        id: github-app
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ vars.SCHEDULE_APP_ID }}
+          private-key: ${{ secrets.SCHEDULE_APP_KEY }}
+          owner: ${{ github.repository_owner }}
+
+      - uses: actions/checkout@v4
+      
+      - name: Call action
+        uses: ./github/actions/output-job-inputs
+        with:
+          token: ${{ steps.github-app.outputs.token }}

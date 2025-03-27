@@ -1,1 +1,12 @@
+name: Output Scheduled Actions
+description: ""
 
+inputs:
+  token:
+    description: The GitHub token used to create an authenticated client
+    default: ${{ github.token }}
+    required: false
+
+runs:
+  using: "node20"
+  main: "output-action.js"

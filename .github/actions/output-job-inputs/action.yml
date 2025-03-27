@@ -20,7 +20,6 @@ runs:
         VARIABLES_JSON: "${{ toJson(inputs.variables_json) }}"
       with:
         script: |
-          const core = require('@actions/core');
           const summary = core.summary;
           
           // Retrieve the input JSON string from the environment.

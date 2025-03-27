@@ -15,11 +15,10 @@ runs:
         GITHUB_ACTION_PATH: ${{ github.action_path }}
       with:
         script: |
-          const [owner, repo] = process.env.GITHUB_REPOSITORY.split('/');
-          const ownerRepo = {
-            owner: owner,
-            repo: repo,
-          };
-          const variables = octokit.rest.actions.listRepoWorkflows(ownerRepo);
-          console.log(variables);
+          const { owner, repo } = context.repo;
 
+          const { data: variables } = await github.rest.actions.listRepoVariables({
+            owner,
+            repo
+          });
+          console.log('variables: ', variables)

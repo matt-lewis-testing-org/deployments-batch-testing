@@ -11,6 +11,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Call action
-        uses: ./.github/actions/output-job-inputs
+        uses: matt-lewis-testing-org/deployments-bach-testing/.github/actions/output-job-inputs@main
         with:
           variables_json: ${{ toJson(vars) }}

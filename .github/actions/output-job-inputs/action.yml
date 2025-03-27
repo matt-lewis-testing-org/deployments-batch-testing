@@ -22,7 +22,6 @@ runs:
         script: |
           const summary = core.summary;
           
-          // Retrieve the input JSON string from the environment.
           const inputJson = process.env.VARIABLES_JSON;
           let variables;
           try {
@@ -34,7 +33,6 @@ runs:
 
           console.log('VARIABLES', variables);
           
-          // Prepare the table rows with a header row.
           let tableRows = [];
           tableRows.push([
             { data: 'Variable Name', header: true },
@@ -42,54 +40,48 @@ runs:
             { data: 'Chart Name', header: true },
             { data: 'Version', header: true }
           ]);
-          
-          // Process each key starting with '_SCHEDULE_'
-          JSON.parse(inputJson, (key, value) => {
-            console.log('key: ', key);
-            if (key.startsWith('_SCHEDULE_')) {
-              const commaIndex = value.indexOf(',');
-              if (commaIndex === -1) {
-                console.log(`No comma found for ${key}, skipping`);
-                continue;
-              }
-              // Get everything after the comma.
-              let jsonStr = value.substring(commaIndex + 1).trim();
-              
-              // Attempt to parse the JSON.
-              let data;
-              try {
-                data = JSON.parse(jsonStr);
-                // If the result is a string, then the JSON was double-encoded.
-                if (typeof data === 'string') {
-                  data = JSON.parse(data);
-                }
-              } catch (err) {
-                console.log(`Failed to parse JSON for ${key}: ${err}`);
-                continue;
-              }
-              
-              // Extract properties in a flexible way.
-              const clusterName = data.cluster_name || data.cluster || '';
-              const chartName = data.chart_name || '';
-              const version = data.version || data.chart_version || '';
 
-              console.log('key: ', key);
-              console.log('clusterName: ', clusterName);
-              console.log('chartName: ', chartName);
-              console.log('version: ', version);
-              console.log('===================');
-              
-              // Append a row for this variable.
-              tableRows.push([
-                { data: key },
-                { data: clusterName },
-                { data: chartName },
-                { data: version }
-              ]);
+          for (const key of Object.keys(variables)) {
+            if (!key.startsWith('_SCHEDULE_')) continue;
+
+            const value = variables[key];
+            const commaIndex = value.indexOf(',');
+            if (commaIndex === -1) {
+              console.log(`No comma found for ${key}, skipping`);
+              continue;
             }
-          });
-          
-          // Build and write the summary.
+
+            let jsonStr = value.substring(commaIndex + 1).trim();
+
+            let data;
+            try {
+              data = JSON.parse(jsonStr);
+              if (typeof data === 'string') {
+                data = JSON.parse(data);
+              }
+            } catch (err) {
+              console.log(`Failed to parse JSON for ${key}: ${err}`);
+              continue;
+            }
+
+            const clusterName = data.cluster_name || data.cluster || '';
+            const chartName = data.chart_name || '';
+            const version = data.version || data.chart_version || '';
+
+            console.log('key: ', key);
+            console.log('clusterName: ', clusterName);
+            console.log('chartName: ', chartName);
+            console.log('version: ', version);
+            console.log('===================');
+
+            tableRows.push([
+              { data: key },
+              { data: clusterName },
+              { data: chartName },
+              { data: version }
+            ]);
+          }
+
           await summary
             .addHeading('Deployment Summary', 2)
             .addTable(tableRows)

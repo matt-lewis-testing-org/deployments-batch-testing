@@ -8,5 +8,5 @@ inputs:
     required: false
 
 runs:
-  using: "node20"
-  main: "dist/output-action.js"
+  using: 'node20'
+  main: './dist/output-action.js'

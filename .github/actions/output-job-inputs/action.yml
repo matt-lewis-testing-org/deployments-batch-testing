@@ -17,7 +17,7 @@ runs:
     - name: Generate Deployment Summary
       uses: actions/github-script@v6
       env:
-        VARIABLES_JSON: "${{ toJson(inputs.variables_json) }}"
+        VARIABLES_JSON: "${{ inputs.variables_json }}"
       with:
         script: |
           const summary = core.summary;

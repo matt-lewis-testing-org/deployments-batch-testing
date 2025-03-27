@@ -22,6 +22,7 @@ runs:
 
         // Retrieve the input JSON string and parse it.
         const inputJson = core.getInput('variables_json');
+        console.log(inputJson);
         const variables = JSON.parse(inputJson);
 
         // Prepare the table rows: start with a header row.

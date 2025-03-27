@@ -13,8 +13,54 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: run script
-      shell: bash
-      run: |
-        num_schedules=$(echo '${{ inputs.variables_json }}' | jq 'keys | map(select(startswith("_SCHEDULE_")))')
-        echo $num_schedules
+  - name: Generate Summary Table
+    uses: actions/github-script@v6
+    with:
+      script: |
+        // Get the JSON input as a string
+        const inputJson = core.getInput('variables_json');
+        // Parse it to get an object
+        const variables = JSON.parse(inputJson);
+
+        // Start constructing the markdown table
+        let markdown = `| Variable Name | Cluster Name | Chart Name | Version |\n`;
+        markdown += `| ------------- | ------------ | ---------- | ------- |\n`;
+
+        // Process each key that starts with '_SCHEDULE_'
+        for (const key in variables) {
+          if (key.startsWith('_SCHEDULE_')) {
+            const value = variables[key];
+            // Split value on the first comma.
+            const commaIndex = value.indexOf(',');
+            if (commaIndex === -1) {
+              console.log(`No comma found for ${key}, skipping`);
+              continue;
+            }
+            // The JSON part is after the comma.
+            const jsonStr = value.substring(commaIndex + 1).trim();
+            let data;
+            try {
+              data = JSON.parse(jsonStr);
+            } catch (err) {
+              console.log(`Failed to parse JSON for ${key}: ${err}`);
+              continue;
+            }
+            // Extract the desired properties.
+            const clusterName = data.cluster_name || '';
+            const chartName = data.chart_name || '';
+            const version = data.version || '';
+
+            // Append a row to the markdown table.
+            markdown += `| ${key} | ${clusterName} | ${chartName} | ${version} |\n`;
+          }
+        }
+
+        // Write the summary to the GitHub Actions summary file if available.
+        if (process.env.GITHUB_STEP_SUMMARY) {
+          const fs = require('fs');
+          fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, markdown);
+        } else {
+          console.log("GITHUB_STEP_SUMMARY not defined. Printing markdown to log:");
+          console.log(markdown);
+        }
+

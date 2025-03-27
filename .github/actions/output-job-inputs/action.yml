@@ -26,7 +26,7 @@ runs:
           const inputJson = process.env.VARIABLES_JSON;
           let variables;
           try {
-            variables = JSON.parse(inputJson);
+            variables = JSON.parse(inputJson, (key, value));
           } catch (e) {
             console.error('Failed to parse input JSON:', e);
             process.exit(1);

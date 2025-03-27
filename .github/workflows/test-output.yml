@@ -3,6 +3,9 @@ name: Workflow to test outputting variable relevant info
 on:
   workflow_dispatch:
 
+# permissions:
+#   actions: read
+
 jobs:
   run-action:
     runs-on: ubuntu-latest

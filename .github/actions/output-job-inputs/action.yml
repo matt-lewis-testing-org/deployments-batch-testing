@@ -30,8 +30,6 @@ runs:
             console.error('Failed to parse input JSON:', e);
             process.exit(1);
           }
-
-          console.log('VARIABLES', variables);
           
           let tableRows = [];
           tableRows.push([
@@ -42,7 +40,6 @@ runs:
           ]);
 
           for (const key of Object.keys(variables)) {
-            console.log('key: ', key);
             if (!key.startsWith('_SCHEDULE_')) continue;
 
             const value = variables[key];
@@ -68,12 +65,6 @@ runs:
             const clusterName = data.cluster_name || data.cluster || '';
             const chartName = data.chart_name || '';
             const version = data.version || data.chart_version || '';
-
-            console.log('key: ', key);
-            console.log('clusterName: ', clusterName);
-            console.log('chartName: ', chartName);
-            console.log('version: ', version);
-            console.log('===================');
 
             tableRows.push([
               { data: key },

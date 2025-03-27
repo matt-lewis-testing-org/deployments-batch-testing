@@ -31,6 +31,8 @@ runs:
             console.error('Failed to parse input JSON:', e);
             process.exit(1);
           }
+
+          console.log('VARIABLES', variables);
           
           // Prepare the table rows with a header row.
           let tableRows = [];

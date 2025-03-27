@@ -7,8 +7,9 @@ inputs:
     default: ${{ github.token }}
     required: false
   variables_json:
-    description: ''
+    description: 'JSON string of variables'
     required: true
+    default: ''
 
 runs:
   using: "composite"
@@ -73,6 +74,6 @@ runs:
           .addTable(tableRows)
           .write();
       with:
-        variables_json: ${{ inputs.variables_json }}
+        variables_json: ${{ toJson(inputs.variables_json) }}
 
 

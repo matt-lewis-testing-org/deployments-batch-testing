@@ -15,13 +15,11 @@ runs:
         GITHUB_ACTION_PATH: ${{ github.action_path }}
       with:
         script: |
-          const { GITHUB_ACTION_PATH } = process.env;
-          const script = require(`${GITHUB_ACTION_PATH}/dist/index.js`);
-
-          const scriptInputs = {
-            token: "${{ inputs.token }}",
-            repo: "${{ github.repository }}"
+          const [owner, repo] = process.env.GITHUB_REPOSITORY.split('/');
+          const ownerRepo = {
+            owner: owner,
+            repo: repo,
           };
-
-          await script({ github, context, core }, scriptInputs);
+          const variables = github.listRepoVariables(ownerRepo);
+          console.log(variables);
 

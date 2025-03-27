@@ -1,15 +1,10 @@
-name: Output Scheduled Actions
-description: ""
+name: List Scheduled Jobs
+description: "List the scheduled jobs created by rollout-deploy-to-prod-scheduled.yaml"
 
 inputs:
-  token:
-    description: The GitHub token used to create an authenticated client
-    default: ${{ github.token }}
-    required: false
   variables_json:
     description: 'JSON string of variables'
     required: true
-    default: ''
 
 runs:
   using: "composite"
@@ -21,7 +16,7 @@ runs:
       with:
         script: |
           const summary = core.summary;
-          
+
           const inputJson = process.env.VARIABLES_JSON;
           let variables;
           try {
@@ -30,17 +25,20 @@ runs:
             console.error('Failed to parse input JSON:', e);
             process.exit(1);
           }
-          
+
           let tableRows = [];
           tableRows.push([
             { data: 'Variable Name', header: true },
-            { data: 'Cluster Name', header: true },
+            { data: 'Scheduled Time', header: true },
             { data: 'Chart Name', header: true },
-            { data: 'Version', header: true }
+            { data: 'Version', header: true },
+            { data: 'Description', header: true }
           ]);
 
           for (const key of Object.keys(variables)) {
             if (!key.startsWith('_SCHEDULE_')) continue;
+
+            const time = new Date(key.split('_').pop()).toISOString();
 
             const value = variables[key];
             const commaIndex = value.indexOf(',');
@@ -62,15 +60,16 @@ runs:
               continue;
             }
 
-            const clusterName = data.cluster_name || data.cluster || '';
             const chartName = data.chart_name || '';
             const version = data.version || data.chart_version || '';
+            const description = data.description || data.description || '';
 
             tableRows.push([
               { data: key },
-              { data: clusterName },
+              { data: time },
               { data: chartName },
-              { data: version }
+              { data: version },
+              { data: description }
             ]);
           }
 

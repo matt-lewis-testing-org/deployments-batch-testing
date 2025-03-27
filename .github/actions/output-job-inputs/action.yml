@@ -42,6 +42,7 @@ runs:
           ]);
 
           for (const key of Object.keys(variables)) {
+            console.log('key: ', key);
             if (!key.startsWith('_SCHEDULE_')) continue;
 
             const value = variables[key];

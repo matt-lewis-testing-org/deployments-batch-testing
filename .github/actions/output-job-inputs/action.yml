@@ -20,6 +20,6 @@ runs:
             owner: owner,
             repo: repo,
           };
-          const variables = github.listRepoVariables(ownerRepo);
+          const variables = octokit.rest.actions.listRepoWorkflows(ownerRepo);
           console.log(variables);
 

@@ -26,7 +26,7 @@ runs:
           const inputJson = process.env.VARIABLES_JSON;
           let variables;
           try {
-            variables = JSON.parse(inputJson, (key, value));
+            variables = JSON.parse(inputJson);
           } catch (e) {
             console.error('Failed to parse input JSON:', e);
             process.exit(1);
@@ -44,51 +44,53 @@ runs:
           ]);
           
           // Process each key starting with '_SCHEDULE_'
-          for (const key in variables) {
-            console.log('key: ', key);
-            if (key.startsWith('_SCHEDULE_')) {
-              const value = variables[key];
-              const commaIndex = value.indexOf(',');
-              if (commaIndex === -1) {
-                console.log(`No comma found for ${key}, skipping`);
-                continue;
-              }
-              // Get everything after the comma.
-              let jsonStr = value.substring(commaIndex + 1).trim();
-              
-              // Attempt to parse the JSON.
-              let data;
-              try {
-                data = JSON.parse(jsonStr);
-                // If the result is a string, then the JSON was double-encoded.
-                if (typeof data === 'string') {
-                  data = JSON.parse(data);
-                }
-              } catch (err) {
-                console.log(`Failed to parse JSON for ${key}: ${err}`);
-                continue;
-              }
-              
-              // Extract properties in a flexible way.
-              const clusterName = data.cluster_name || data.cluster || '';
-              const chartName = data.chart_name || '';
-              const version = data.version || data.chart_version || '';
-
+          JSON.parse(inputJson, (key, value) => 
+            for (const key in variables) {
               console.log('key: ', key);
-              console.log('clusterName: ', clusterName);
-              console.log('chartName: ', chartName);
-              console.log('version: ', version);
-              console.log('===================');
-              
-              // Append a row for this variable.
-              tableRows.push([
-                { data: key },
-                { data: clusterName },
-                { data: chartName },
-                { data: version }
-              ]);
+              if (key.startsWith('_SCHEDULE_')) {
+                const value = variables[key];
+                const commaIndex = value.indexOf(',');
+                if (commaIndex === -1) {
+                  console.log(`No comma found for ${key}, skipping`);
+                  continue;
+                }
+                // Get everything after the comma.
+                let jsonStr = value.substring(commaIndex + 1).trim();
+                
+                // Attempt to parse the JSON.
+                let data;
+                try {
+                  data = JSON.parse(jsonStr);
+                  // If the result is a string, then the JSON was double-encoded.
+                  if (typeof data === 'string') {
+                    data = JSON.parse(data);
+                  }
+                } catch (err) {
+                  console.log(`Failed to parse JSON for ${key}: ${err}`);
+                  continue;
+                }
+                
+                // Extract properties in a flexible way.
+                const clusterName = data.cluster_name || data.cluster || '';
+                const chartName = data.chart_name || '';
+                const version = data.version || data.chart_version || '';
+
+                console.log('key: ', key);
+                console.log('clusterName: ', clusterName);
+                console.log('chartName: ', chartName);
+                console.log('version: ', version);
+                console.log('===================');
+                
+                // Append a row for this variable.
+                tableRows.push([
+                  { data: key },
+                  { data: clusterName },
+                  { data: chartName },
+                  { data: version }
+                ]);
+              }
             }
-          }
+          });
           
           // Build and write the summary.
           await summary

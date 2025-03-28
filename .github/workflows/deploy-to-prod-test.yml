@@ -73,7 +73,7 @@ jobs:
           echo "date=$date" >> "$GITHUB_OUTPUT"
 
       - name: skip name test
-        if: ${{ github.actor != 'matthew-lewis20' }}
+        if: ${{ github.actor != 'alex-broad' }}
         run: |
           echo "ran by Matt"
       

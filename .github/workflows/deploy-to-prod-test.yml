@@ -1,10 +1,10 @@
 name: Deploy to Prod Cluster - Scheduled
 
 on:
-  schedule:
+  # schedule:
     # This MUST be in sync with the DEPLOYMENT_TIME below (and is in UTC)
     # Set to 5 mins past the hour to avoid the hourly crush
-    - cron: '0 21 * * 1'
+    # - cron: '*/5 * * * *'
   workflow_dispatch:
     inputs:
       cluster:
@@ -12,16 +12,15 @@ on:
         description: 'Cluster to deploy to'
         required: true
         options:
-          - scprodeu-eu-central-1
-          - scprodjp-ap-northeast-1
+          - scdev04-us-west-2
       chart_name:
         type: choice
         description: 'the name of the helm chart to deploy'
         required: true
         options:
 # service options
-          - agent-auth
-          - agent-auth-functional-test
+          - sc-ops-canary-github-cloud
+# service options end
       chart_version:
         description: |
           The helm chart version number to deploy in git describe X.Y.Z-0-gabcdefa format.
@@ -36,20 +35,24 @@ on:
           A short description of the change being deployed. This will be shared with our
           partners.
         required: true
+      freeze_time:
+        type: string
+        description: |
+          Time when deploys will be sent to the next week.
+        required: true
+      deployment_time:
+        type: string
+        description: |
+          Time when deploys will be scheduled at.
+        required: true
 
 jobs:
-  check-po-deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo "check PO deploy executed"
-
   deploy:
     name: Schedule deployment
-    needs: check-po-deploy
     runs-on: ubuntu-latest
     env:
-      FREEZE_TIME: '3pm UTC Wednesday'
-      DEPLOYMENT_TIME: '5am UTC Monday'
+      FREEZE_TIME: ${{ inputs.freeze_time }}
+      DEPLOYMENT_TIME: ${{ inputs.deployment_time }}
     steps:
       - name: calculate date
         id: date
@@ -69,27 +72,36 @@ jobs:
           echo "Calculated deployment date: $date"
           echo "date=$date" >> "$GITHUB_OUTPUT"
 
-      - name: Get deployment action scheduler token from github app
-        id: github-app
-        uses: actions/create-github-app-token@v1
-        with:
-          app-id: ${{ vars.SCHEDULE_APP_ID }}
-          private-key: ${{ secrets.SCHEDULE_APP_KEY }}
-          owner: ${{ github.repository_owner }}
+      - name: skip name test
+        if: ${{ github.actor != 'matthew-lewis20' }}
+        run: |
+          echo "ran by Matt"
+      
+      - name: output date
+        run: |
+          echo "${{ steps.date.outputs.date }}"
 
-      - uses: austenstone/schedule@v1.3
-        with:
-          github-token: ${{ steps.github-app.outputs.token }}
-          date: ${{ steps.date.outputs.date }}
-          workflow: output-inputs.yml
-          timezone: UTC
-          inputs: |
-            {
-              "cluster": "${{ inputs.cluster }}",
-              "chart_name": "${{ inputs.chart_name }}",
-              "chart_version": "${{ inputs.chart_version }}",
-              "values_filename": "${{ inputs.values_filename }}",
-              "description": "${{ inputs.description }}",
-              "slack_channel": "dscc-gha-prod-deploys",
-              "int_checks_status": "true"
-            }
+      # - name: Get deployment action scheduler token from github app
+      #   id: github-app
+      #   uses: actions/create-github-app-token@v1
+      #   with:
+      #     app-id: ${{ vars.SCHEDULE_APP_ID }}
+      #     private-key: ${{ secrets.SCHEDULE_APP_KEY }}
+      #     owner: ${{ github.repository_owner }}
+
+      # - uses: austenstone/schedule@v1.3
+      #   with:
+      #     github-token: ${{ steps.github-app.outputs.token }}
+      #     date: ${{ steps.date.outputs.date }}
+      #     workflow: output-inputs.yml
+      #     timezone: UTC
+      #     inputs: |
+      #       {
+      #         "cluster": "${{ inputs.cluster }}",
+      #         "chart_name": "${{ inputs.chart_name }}",
+      #         "chart_version": "${{ inputs.chart_version }}",
+      #         "values_filename": "${{ inputs.values_filename }}",
+      #         "description": "${{ inputs.description }}",
+      #         "slack_channel": "dscc-gha-prod-deploys",
+      #         "int_checks_status": "true"
+      #       }

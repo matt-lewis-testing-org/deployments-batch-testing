@@ -4,22 +4,24 @@ on:
   workflow_dispatch:
 
 jobs:
-  # test-echo:
-  #   name: Schedule deployment
-  #   runs-on: ubuntu-latest
-  #   steps:
-      # Safety measure in case of issues
-      # - name: Dump vars
-      #   run: echo '${{ toJson(vars) }}'
-
-  test-echo-js:
-    name: dump vars w/ JS
+  test-echo:
+    name: Schedule deployment
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/github-script@v6
+      # Safety measure in case of issues
+      - name: Dump vars
         env:
           VARIABLES_JSON: "${{ toJson(vars) }}"
-        with:
-          script: |
-            const inputJson = process.env.VARIABLES_JSON;
-            console.log(inputJson);
+        run: echo "${VARIABLES_JSON}"
+
+  # test-echo-js:
+  #   name: dump vars w/ JS
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/github-script@v6
+  #       env:
+  #         VARIABLES_JSON: "${{ toJson(vars) }}"
+  #       with:
+  #         script: |
+  #           const inputJson = process.env.VARIABLES_JSON;
+  #           console.log(inputJson);

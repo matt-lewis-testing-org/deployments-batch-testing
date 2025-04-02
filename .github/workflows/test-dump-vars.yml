@@ -11,3 +11,15 @@ jobs:
       # Safety measure in case of issues
       - name: Dump vars
         run: echo '${{ toJson(vars) }}'
+
+  test-echo-js:
+    name: dump vars w/ JS
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v6
+        env:
+          VARIABLES_JSON: "${{ toJson(vars) }}"
+        with:
+          script: |
+            const inputJson = process.env.VARIABLES_JSON;
+            console.log(inputJson);

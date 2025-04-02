@@ -4,13 +4,13 @@ on:
   workflow_dispatch:
 
 jobs:
-  test-echo:
-    name: Schedule deployment
-    runs-on: ubuntu-latest
-    steps:
+  # test-echo:
+  #   name: Schedule deployment
+  #   runs-on: ubuntu-latest
+  #   steps:
       # Safety measure in case of issues
-      - name: Dump vars
-        run: echo '${{ toJson(vars) }}'
+      # - name: Dump vars
+      #   run: echo '${{ toJson(vars) }}'
 
   test-echo-js:
     name: dump vars w/ JS

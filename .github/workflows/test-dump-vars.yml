@@ -10,4 +10,4 @@ jobs:
     steps:
       # Safety measure in case of issues
       - name: Dump vars
-        run: echo "${{ toJson(vars) }}"
+        run: echo '${{ toJson(vars) }}'

@@ -1,0 +1,19 @@
+name: test echo vars
+
+on:
+  workflow_dispatch:
+    # inputs:
+    #   wait-time:
+
+jobs:
+  do-schedule:
+    name: Schedule deployment
+    runs-on: ubuntu-latest
+    steps:
+      - uses: austenstone/schedule@v1.3
+        with:
+          github-token: ${{ steps.github-app.outputs.token }}
+          workflow: output-inputs.yml
+          timezone: UTC
+          wait-ms: "10000" 
+          wait-delay-ms: "5000"

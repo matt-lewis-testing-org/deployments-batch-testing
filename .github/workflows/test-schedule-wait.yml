@@ -1,4 +1,4 @@
-name: test echo vars
+name: test schedule wait
 
 on:
   workflow_dispatch:

@@ -23,4 +23,4 @@ jobs:
           github-token: ${{ steps.github-app.outputs.token }}
           workflow: output-inputs.yml
           timezone: UTC
-          wait-ms: 45000
+          wait-ms: "45000"

@@ -10,6 +10,14 @@ jobs:
     name: Schedule deployment
     runs-on: ubuntu-latest
     steps:
+      - name: Get deployment action scheduler token from github app
+        id: github-app
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ vars.SCHEDULE_APP_ID }}
+          private-key: ${{ secrets.SCHEDULE_APP_KEY }}
+          owner: ${{ github.repository_owner }}
+      
       - uses: austenstone/schedule@v1.3
         with:
           github-token: ${{ steps.github-app.outputs.token }}

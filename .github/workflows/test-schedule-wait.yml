@@ -35,3 +35,4 @@ jobs:
           # wait-ms: ${{ inputs.wait-time }} # Check for [inputted time]
           # wait-delay-ms: ${{ inputs.wait-delay }} # Wait [inputted time] between checks
           skip-check-workflows: 'true'
+          skip-summary: 'true'

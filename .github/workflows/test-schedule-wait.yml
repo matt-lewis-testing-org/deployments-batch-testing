@@ -27,12 +27,10 @@ jobs:
           private-key: ${{ secrets.SCHEDULE_APP_KEY }}
           owner: ${{ github.repository_owner }}
       
-      - uses: matthew-lewis20/schedule@add-optional-gates
+      - uses: matthew-lewis20/schedule@general-improvments
         with:
           github-token: ${{ steps.github-app.outputs.token }}
           workflow: output-inputs.yml
           timezone: UTC
           # wait-ms: ${{ inputs.wait-time }} # Check for [inputted time]
           # wait-delay-ms: ${{ inputs.wait-delay }} # Wait [inputted time] between checks
-          skip-check-workflows: 'true'
-          skip-summary: 'true'

@@ -35,16 +35,19 @@ on:
           A short description of the change being deployed. This will be shared with our
           partners.
         required: true
+        default: 'example description'
       freeze_time:
         type: string
         description: |
           Time when deploys will be sent to the next week.
         required: true
+        default: '11pm UTC Monday'
       deployment_time:
         type: string
         description: |
           Time when deploys will be scheduled at.
         required: true
+        default: '2pm UTC Wednesday'
 
 jobs:
   deploy:
@@ -72,36 +75,27 @@ jobs:
           echo "Calculated deployment date: $date"
           echo "date=$date" >> "$GITHUB_OUTPUT"
 
-      - name: skip name test
-        if: ${{ github.actor != 'alex-broad' }}
-        run: |
-          echo "ran by Matt"
-      
-      - name: output date
-        run: |
-          echo "${{ steps.date.outputs.date }}"
+      - name: Get deployment action scheduler token from github app
+        id: github-app
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ vars.SCHEDULE_APP_ID }}
+          private-key: ${{ secrets.SCHEDULE_APP_KEY }}
+          owner: ${{ github.repository_owner }}
 
-      # - name: Get deployment action scheduler token from github app
-      #   id: github-app
-      #   uses: actions/create-github-app-token@v1
-      #   with:
-      #     app-id: ${{ vars.SCHEDULE_APP_ID }}
-      #     private-key: ${{ secrets.SCHEDULE_APP_KEY }}
-      #     owner: ${{ github.repository_owner }}
-
-      # - uses: austenstone/schedule@v1.3
-      #   with:
-      #     github-token: ${{ steps.github-app.outputs.token }}
-      #     date: ${{ steps.date.outputs.date }}
-      #     workflow: output-inputs.yml
-      #     timezone: UTC
-      #     inputs: |
-      #       {
-      #         "cluster": "${{ inputs.cluster }}",
-      #         "chart_name": "${{ inputs.chart_name }}",
-      #         "chart_version": "${{ inputs.chart_version }}",
-      #         "values_filename": "${{ inputs.values_filename }}",
-      #         "description": "${{ inputs.description }}",
-      #         "slack_channel": "dscc-gha-prod-deploys",
-      #         "int_checks_status": "true"
-      #       }
+      - uses: austenstone/schedule@v1.3
+        with:
+          github-token: ${{ steps.github-app.outputs.token }}
+          date: ${{ steps.date.outputs.date }}
+          workflow: output-inputs.yml
+          timezone: UTC
+          inputs: |
+            {
+              "cluster": "${{ inputs.cluster }}",
+              "chart_name": "${{ inputs.chart_name }}",
+              "chart_version": "${{ inputs.chart_version }}",
+              "values_filename": "${{ inputs.values_filename }}",
+              "description": "${{ inputs.description }}",
+              "slack_channel": "dscc-gha-prod-deploys",
+              "int_checks_status": "true"
+            }

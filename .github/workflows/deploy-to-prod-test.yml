@@ -83,12 +83,13 @@ jobs:
           private-key: ${{ secrets.SCHEDULE_APP_KEY }}
           owner: ${{ github.repository_owner }}
 
-      - uses: austenstone/schedule@v1.3
+      - uses: matthew-lewis20/schedule@general-improvments
         with:
           github-token: ${{ steps.github-app.outputs.token }}
           date: ${{ steps.date.outputs.date }}
           workflow: output-inputs.yml
           timezone: UTC
+          skip-check-workflows: 'true'
           inputs: |
             {
               "cluster": "${{ inputs.cluster }}",

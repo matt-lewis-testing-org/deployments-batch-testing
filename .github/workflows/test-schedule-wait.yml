@@ -27,7 +27,7 @@ jobs:
           private-key: ${{ secrets.SCHEDULE_APP_KEY }}
           owner: ${{ github.repository_owner }}
       
-      - uses: matthew-lewis20/schedule@general-improvments
+      - uses: matthew-lewis20/schedule@cutback-changes
         with:
           github-token: ${{ steps.github-app.outputs.token }}
           workflow: output-inputs.yml

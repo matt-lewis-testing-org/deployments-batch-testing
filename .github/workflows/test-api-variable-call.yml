@@ -38,7 +38,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Call action
-        uses: hpe-cds/deployments/.github/actions/list-scheduled-jobs@main
+        uses: ./.github/actions/output-job-inputs
         with:
           variables_json: ${{ steps.print-api-vars.outputs.variables }}
 

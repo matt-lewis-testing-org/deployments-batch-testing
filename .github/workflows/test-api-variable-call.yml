@@ -1,0 +1,46 @@
+# Copyright 2025 Hewlett Packard Enterprise Development LP
+
+name: Test variable call (API)
+
+on:
+  workflow_dispatch:
+
+jobs:
+
+  # print-env-vars:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: echo variable vars (env)
+  #       run: |
+  #         echo "Variable's using toJson(vars)"
+  #         echo "${{ toJson(vars) }}"
+  
+  print-api-vars:
+    runs-on: ubuntu-latest
+    outputs:
+      variables: ${{ steps.vars-api.outputs.variables-api }}
+    steps:
+      - name: echo variable vars (api)
+        id: vars-api
+        run: |
+          echo "Variables using github api"
+          echo "============================="
+          API_VAR_CALL=$(curl -L \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            https://api.github.com/repos/${{ github.repository }}/actions/variables?per_page=30 | jq .variables)
+          
+          echo "variables-api=$API_VAR_CALL" >> "$GITHUB_OUTPUT"
+
+  run-action:
+    needs: print-api-vars
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call action
+        uses: hpe-cds/deployments/.github/actions/list-scheduled-jobs@main
+        with:
+          variables_json: ${{ steps.print-api-vars.outputs.variables }}
+
+        
+        

@@ -41,7 +41,7 @@ jobs:
       - name: Call action
         uses: ./.github/actions/output-job-inputs
         with:
-          variables_json: ${{ steps.print-api-vars.outputs.variables }}
+          variables_json: ${{ toJson(vars) }}
 
         
         
